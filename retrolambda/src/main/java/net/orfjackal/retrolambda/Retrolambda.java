@@ -1,3 +1,4 @@
+// Copyright (C) 2014-2016 Intel Corporation
 // Copyright © 2013-2015 Esko Luontola <www.orfjackal.net>
 // This software is released under the Apache License 2.0.
 // The license text is at http://www.apache.org/licenses/LICENSE-2.0
@@ -18,12 +19,14 @@ public class Retrolambda {
     public static void run(Config config) throws Throwable {
         int bytecodeVersion = config.getBytecodeVersion();
         boolean defaultMethodsEnabled = config.isDefaultMethodsEnabled();
+        boolean natjSupportEnabled = config.isNatJSupportEnabled();
         Path inputDir = config.getInputDir();
         Path outputDir = config.getOutputDir();
         String classpath = config.getClasspath();
         List<Path> includedFiles = config.getIncludedFiles();
         System.out.println("Bytecode version: " + bytecodeVersion + " (" + config.getJavaVersion() + ")");
         System.out.println("Default methods:  " + defaultMethodsEnabled);
+        System.out.println("NatJ support:     " + natjSupportEnabled);
         System.out.println("Input directory:  " + inputDir);
         System.out.println("Output directory: " + outputDir);
         System.out.println("Classpath:        " + classpath);
@@ -40,7 +43,7 @@ public class Retrolambda {
 
         ClassHierarchyAnalyzer analyzer = new ClassHierarchyAnalyzer();
         OutputDirectory outputDirectory = new OutputDirectory(outputDir);
-        Transformers transformers = new Transformers(bytecodeVersion, defaultMethodsEnabled, analyzer);
+        Transformers transformers = new Transformers(bytecodeVersion, defaultMethodsEnabled, natjSupportEnabled, analyzer);
         LambdaClassSaver lambdaClassSaver = new LambdaClassSaver(outputDirectory, transformers);
 
         try (LambdaClassDumper dumper = new LambdaClassDumper(lambdaClassSaver)) {
