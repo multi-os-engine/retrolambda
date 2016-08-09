@@ -1,3 +1,4 @@
+// Copyright 2014-2016 Intel Corporation
 // Copyright © 2013-2015 Esko Luontola <www.orfjackal.net>
 // This software is released under the Apache License 2.0.
 // The license text is at http://www.apache.org/licenses/LICENSE-2.0
@@ -16,6 +17,7 @@ public class Config {
     private static final String PREFIX = "retrolambda.";
     public static final String BYTECODE_VERSION = PREFIX + "bytecodeVersion";
     public static final String DEFAULT_METHODS = PREFIX + "defaultMethods";
+    public static final String NATJ_SUPPORT = PREFIX + "natjSupport";
     public static final String INPUT_DIR = PREFIX + "inputDir";
     public static final String OUTPUT_DIR = PREFIX + "outputDir";
     public static final String CLASSPATH = PREFIX + "classpath";
@@ -89,6 +91,10 @@ public class Config {
 
     public boolean isDefaultMethodsEnabled() {
         return Boolean.parseBoolean(p.getProperty(DEFAULT_METHODS, "false"));
+    }
+
+    public boolean isNatJSupportEnabled() {
+        return Boolean.parseBoolean(p.getProperty(NATJ_SUPPORT, "false"));
     }
 
 

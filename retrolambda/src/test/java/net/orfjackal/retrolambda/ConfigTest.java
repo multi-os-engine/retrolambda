@@ -1,3 +1,4 @@
+// Copyright 2014-2016 Intel Corporation
 // Copyright © 2013-2015 Esko Luontola <www.orfjackal.net>
 // This software is released under the Apache License 2.0.
 // The license text is at http://www.apache.org/licenses/LICENSE-2.0
@@ -41,6 +42,14 @@ public class ConfigTest {
 
         systemProperties.setProperty(Config.DEFAULT_METHODS, "true");
         assertThat("can override the default", config().isDefaultMethodsEnabled(), is(true));
+    }
+
+    @Test
+    public void natj_support() {
+        assertThat("defaults to disabled", config().isNatJSupportEnabled(), is(false));
+
+        systemProperties.setProperty(Config.NATJ_SUPPORT, "true");
+        assertThat("can override the default", config().isNatJSupportEnabled(), is(true));
     }
 
     @Test

@@ -1,3 +1,4 @@
+// Copyright 2014-2016 Intel Corporation
 // Copyright © 2013-2015 Esko Luontola <www.orfjackal.net>
 // This software is released under the Apache License 2.0.
 // The license text is at http://www.apache.org/licenses/LICENSE-2.0
@@ -7,7 +8,11 @@ package net.orfjackal.retrolambda;
 import net.orfjackal.retrolambda.interfaces.*;
 import net.orfjackal.retrolambda.lambdas.*;
 import net.orfjackal.retrolambda.trywithresources.SwallowSuppressedExceptions;
+
 import org.objectweb.asm.*;
+
+import org.moe.retrolambda.natj.AddMissingAnnotations;
+import org.moe.retrolambda.natj.AddMissingNatJRegister;
 
 import java.util.Optional;
 
@@ -15,11 +20,13 @@ public class Transformers {
 
     private final int targetVersion;
     private final boolean defaultMethodsEnabled;
+    private boolean natjSupportEnabled;
     private final ClassHierarchyAnalyzer analyzer;
 
-    public Transformers(int targetVersion, boolean defaultMethodsEnabled, ClassHierarchyAnalyzer analyzer) {
+    public Transformers(int targetVersion, boolean defaultMethodsEnabled, boolean natjSupportEnabled, ClassHierarchyAnalyzer analyzer) {
         this.targetVersion = targetVersion;
         this.defaultMethodsEnabled = defaultMethodsEnabled;
+        this.natjSupportEnabled = natjSupportEnabled;
         this.analyzer = analyzer;
     }
 
@@ -44,9 +51,15 @@ public class Transformers {
         return transform(reader, (next) -> {
             if (defaultMethodsEnabled) {
                 next = new UpdateRelocatedMethodInvocations(next, analyzer);
+                if (natjSupportEnabled) {
+                	next = new AddMissingAnnotations(next);
+                }
                 next = new AddMethodDefaultImplementations(next, analyzer);
             }
             next = new BackportLambdaInvocations(next);
+            if (natjSupportEnabled) {
+                next = new AddMissingNatJRegister(next);
+            }
             return next;
         });
     }
